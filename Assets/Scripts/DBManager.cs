@@ -1,15 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
+
+public struct ItemFilter {
+	public string name;
+	public int category;
+	public int brand;
+	public int unitScale;
+	public float scale;
+}
+
+public struct HardwareItem {
+	public int id;
+	public string name;
+	public int category;
+	public int brand;
+	public int unitScale;
+	public float scale;
+	public float price;
+	public int quantity;
+};  
 
 public class DBManager : MonoBehaviour {
 
 
 	SqliteDatabase sqlDB;
 
-	DataTable brands;
-	DataTable categories;
-	DataTable unit_scales;
+	public DataTable brands;
+	public DataTable categories;
+	public DataTable unit_scales;
+
+	public List<HardwareItem> items = new List<HardwareItem> ();
 
 	void Awake() 
 	{
@@ -35,7 +57,6 @@ public class DBManager : MonoBehaviour {
 		categories = sqlDB.ExecuteQuery("SELECT * FROM categories");
 		unit_scales = sqlDB.ExecuteQuery("SELECT * FROM unit_scale");
 	}
-
 
 	// Use this for initialization
 	void Start () {
@@ -86,9 +107,26 @@ public class DBManager : MonoBehaviour {
 		for(int i = 0; i < result.Rows.Count; i++){
 			var row = result.Rows[i];
 
-			string _logData = "id = " + (int)row ["id"] + " | name = " + (string)row ["name"] + " | category = " + getCategoryName ((int)row ["category_id"]) + " | brand = " + getBrandName ((int)row ["brand_id"]) + " | unit_scale = " + getUnitScaleName ((int)row ["unit_id"]) + " : " + (string)row ["scale"] + " | price = " + (int)row ["price"] + " | quantity = " + (int)row ["quantity"];
+			HardwareItem item = new HardwareItem ();
+			item.id = (int)row["id"];
+			item.name = (string)row ["name"];
+			item.category = (int)row ["category_id"];
+			item.brand = (int)row ["brand_id"];
+			item.category = (int)row ["category_id"];
+			item.unitScale = (int)row ["unit_id"];
+			item.scale =  float.Parse((string)row ["scale"]);
+			item.price = (int)row ["price"];
+			item.quantity = (int)row ["quantity"];
 
-			print (_logData);
+
+
+			items.Add (item);
+
+
+			//string _logData = "id = " + (int)row ["id"] + " | name = " + (string)row ["name"] + " | category = " + \
+			//getCategoryName ((int)row ["category_id"]) + " | brand = " + getBrandName ((int)row ["brand_id"]) + " | unit_scale = " + getUnitScaleName ((int)row ["unit_id"]) + " : " + (string)row ["scale"] + " | price = " + (int)row ["price"] + " | quantity = " + (int)row ["quantity"];
+
+			//print (_logData);
 			/*
 			print("id=" + (int)row["id"]);
 			print("name=" + (string)row["name"]);
@@ -103,8 +141,42 @@ public class DBManager : MonoBehaviour {
 			*/
 		}
 
-	
-
 	}
 
+	public List<HardwareItem> getItemsWithFilter(ItemFilter filter){
+
+		List<HardwareItem> retVal = new List<HardwareItem> ();
+
+		foreach (var item in items) {
+			
+			if (filter.name.Length > 0 && filter.name != item.name)
+				continue;
+			
+
+			if (filter.category > 0 && filter.category != item.category)
+				continue;
+			
+
+			if (filter.brand > 0 && filter.brand != item.brand)
+				continue;
+			
+
+			if (filter.unitScale > 0 && filter.unitScale != item.unitScale)
+				continue;
+			
+
+			if (filter.scale > 0 && filter.scale != item.scale)
+				continue;
+		
+			retVal.Add (item);
+		}
+
+		return retVal;
+	}
+
+
+
+
 }
+
+
