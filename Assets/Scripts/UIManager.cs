@@ -5,13 +5,32 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour {
 
-	public GameObject mainMenu;
-	public GameObject accessPanel;
-	public InputField itemName;
-	public Dropdown categories;
-	public Dropdown brands;
-	public Dropdown unitScales;
-	public InputField units;
+
+	[SerializeField]
+	GameObject mainMenu;
+
+	[SerializeField]
+	GameObject accessPanel;
+
+	[SerializeField]
+	InputField itemName;
+
+	[SerializeField]
+	Dropdown categories;
+
+	[SerializeField]
+	Dropdown brands;
+
+	[SerializeField]
+	Dropdown unitScales;
+
+	[SerializeField]
+	InputField units;
+
+	[SerializeField]
+	ScrollRect itemListView;
+
+	public GameObject ItemEntry;
 
 	DBManager db;
 
@@ -123,6 +142,12 @@ public class UIManager : MonoBehaviour {
 	}
 
 	public void Filter(){
+		foreach (Transform child in itemListView.content.transform) {
+			GameObject.Destroy(child.gameObject);
+		}
+		RectTransform rt = itemListView.content.GetComponent<RectTransform> ();
+		rt.sizeDelta = new Vector2 (rt.sizeDelta.x, 0);
+
 		ItemFilter filter = new ItemFilter ();
 
 		filter.name = itemName.text;
@@ -133,9 +158,30 @@ public class UIManager : MonoBehaviour {
 
 		List<HardwareItem> list = db.getItemsWithFilter (filter);
 		print ("============================================================");
+		int counter = 0;
 		foreach (var item in list) {
+
+
+			GameObject itemClone = (GameObject) Instantiate(ItemEntry);
+
+			itemClone.transform.parent = itemListView.content.transform;
+			itemClone.transform.localPosition = new Vector3 (457, -20-(40 * counter), 0);
+			ItemEntry itemEntry = itemClone.GetComponent<ItemEntry> ();
+
+			itemEntry.setProperties (item.name, db.getCategoryName(item.category), db.getBrandName(item.brand), db.getUnitScaleName(item.unitScale), item.scale, item.quantity);
+
 			print (item.name + " | " + item.category + " | " + item.brand + " | " + item.unitScale + " | " + item.scale);
-		
+
+
+			//itemListView.GetComponent<RectTransform> ().rect.height = itemListView.GetComponent<RectTransform> ().rect.height + ((40 * counter)); 
+
+			//itemListView;
+
+			//itemListVie
+
+			//RectTransform rt = itemListView.content.GetComponent<RectTransform> ();
+			rt.sizeDelta = new Vector2 (rt.sizeDelta.x, (40 * counter) + 50);
+			counter++;
 		}
 	}
 }

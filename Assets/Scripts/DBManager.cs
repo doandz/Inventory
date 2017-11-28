@@ -70,7 +70,7 @@ public class DBManager : MonoBehaviour {
 
 
 
-	string getCategoryName(int p_id){
+	public string getCategoryName(int p_id){
 		for (int i = 0; i < categories.Rows.Count; i++) {
 			DataRow row = categories.Rows[i];
 			if (p_id == (int)row ["id"])
@@ -79,7 +79,7 @@ public class DBManager : MonoBehaviour {
 		return "unknown category";
 	}
 
-	string getBrandName(int p_id){
+	public string getBrandName(int p_id){
 		for (int i = 0; i < brands.Rows.Count; i++) {
 			DataRow row = brands.Rows[i];
 			if (p_id == (int)row ["id"])
@@ -89,7 +89,7 @@ public class DBManager : MonoBehaviour {
 		return "unknown brand";
 	}
 
-	string getUnitScaleName(int p_id){
+	public string getUnitScaleName(int p_id){
 		for (int i = 0; i < unit_scales.Rows.Count; i++) {
 			DataRow row = unit_scales.Rows[i];
 			if (p_id == (int)row ["id"])
@@ -167,7 +167,7 @@ public class DBManager : MonoBehaviour {
 
 			if (filter.scale > 0 && filter.scale != item.scale)
 				continue;
-		
+
 			retVal.Add (item);
 		}
 
