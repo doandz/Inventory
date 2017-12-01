@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class ItemEntry : MonoBehaviour {
+public class ItemEntry : MonoBehaviour, ISelectHandler, IDeselectHandler {
 
 	[SerializeField]
 	Text _name;
@@ -36,5 +37,17 @@ public class ItemEntry : MonoBehaviour {
 		_brand.text = brand;
 		_unitScale.text = unitScale + " : " + scale.ToString ();
 		_quantity.text = quantity.ToString ();
+	}
+
+	public void OnSelect(BaseEventData data)
+	{
+		GetComponent<Image>().color = new Color32(128,128,225,100);
+		print ("OnSelect");
+	}
+	public void OnDeselect(BaseEventData data)
+	{
+
+		GetComponent<Image>().color = new Color32(255,255,225,100);
+		print ("OnDeselect");
 	}
 }

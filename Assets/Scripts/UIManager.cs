@@ -30,20 +30,38 @@ public class UIManager : MonoBehaviour {
 	[SerializeField]
 	ScrollRect itemListView;
 
+
+	[SerializeField]
+	GameObject loading;
+
+
 	public GameObject ItemEntry;
 
 	DBManager db;
 
 	// Use this for initialization
-	void Start () {
+	IEnumerator Start () {
 
-		mainMenu.SetActive (true);
-		accessPanel.SetActive (false);
+
+		print ("+Start");
+
+		//mainMenu.SetActive (true);
+		accessPanel.SetActive (true);
+		loading.SetActive (true);
 
 
 		db = gameObject.GetComponent<DBManager> ();
-		db.click ();
+
+		yield return StartCoroutine(db.load());
+
+
+		loading.SetActive (false);
+		resetFilterUI ();
+		Filter ();
+
+		print ("-Start");
 	}
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -164,7 +182,8 @@ public class UIManager : MonoBehaviour {
 
 			GameObject itemClone = (GameObject) Instantiate(ItemEntry);
 
-			itemClone.transform.parent = itemListView.content.transform;
+			itemClone.transform.SetParent(itemListView.content.transform);
+
 			itemClone.transform.localPosition = new Vector3 (457, -20-(40 * counter), 0);
 			ItemEntry itemEntry = itemClone.GetComponent<ItemEntry> ();
 
@@ -183,5 +202,26 @@ public class UIManager : MonoBehaviour {
 			rt.sizeDelta = new Vector2 (rt.sizeDelta.x, (40 * counter) + 50);
 			counter++;
 		}
+	}
+
+
+	public void AccessButtonClick(int p_type){
+		switch (p_type) {
+		case 0: // add
+			break;
+		case 1: // remove
+			break;
+		case 2: // update
+			break;
+		case 3: // new
+			break;
+		default:
+			break;
+		}
+	
+	}
+
+	public void SetSelected(GameObject p_itemEntry){
+		
 	}
 }

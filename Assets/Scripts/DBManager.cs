@@ -98,10 +98,9 @@ public class DBManager : MonoBehaviour {
 		return "unknown unit scale";
 	}
 
+	public IEnumerator load(){
 
-	public void click(){
-
-		print ("CLICK");
+		print ("+load");
 		var result = sqlDB.ExecuteQuery("SELECT * FROM items");
 
 		for(int i = 0; i < result.Rows.Count; i++){
@@ -140,6 +139,10 @@ public class DBManager : MonoBehaviour {
 			print ("===============================");
 			*/
 		}
+
+
+		yield return new WaitForSeconds(1);
+		print ("-load");
 
 	}
 
