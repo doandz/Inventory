@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour {
 
+	public enum UpdateType{
+		ut_add = 0,
+		ut_remove = 1,
+		ut_update = 2,
+		ut_new = 3
+	};
+
 
 	[SerializeField]
 	GameObject mainMenu;
@@ -30,12 +37,17 @@ public class UIManager : MonoBehaviour {
 	[SerializeField]
 	ScrollRect itemListView;
 
+	[SerializeField]
+	UpdateItemPanel updatePanel;
+
 
 	[SerializeField]
 	GameObject loading;
 
 
-	public GameObject ItemEntry;
+	public GameObject ItemEntry; //- item entry prefab
+
+	private ItemEntry m_selectedItemEntry = null;
 
 	DBManager db;
 
@@ -47,17 +59,20 @@ public class UIManager : MonoBehaviour {
 
 		//mainMenu.SetActive (true);
 		accessPanel.SetActive (true);
-		loading.SetActive (true);
+		updatePanel.gameObject.SetActive (false);
 
 
 		db = gameObject.GetComponent<DBManager> ();
 
-		yield return StartCoroutine(db.load());
-
-
-		loading.SetActive (false);
 		resetFilterUI ();
+
+
+		loading.SetActive (true);
+		yield return StartCoroutine(db.load());
+		loading.SetActive (false);
+
 		Filter ();
+
 
 		print ("-Start");
 	}
@@ -175,7 +190,7 @@ public class UIManager : MonoBehaviour {
 		filter.scale = 0;//float.Parse(units.text);//(float)units.text;
 
 		List<HardwareItem> list = db.getItemsWithFilter (filter);
-		print ("============================================================");
+		//print ("============================================================");
 		int counter = 0;
 		foreach (var item in list) {
 
@@ -187,9 +202,11 @@ public class UIManager : MonoBehaviour {
 			itemClone.transform.localPosition = new Vector3 (457, -20-(40 * counter), 0);
 			ItemEntry itemEntry = itemClone.GetComponent<ItemEntry> ();
 
-			itemEntry.setProperties (item.name, db.getCategoryName(item.category), db.getBrandName(item.brand), db.getUnitScaleName(item.unitScale), item.scale, item.quantity);
+			itemEntry.setProperty (item);
 
-			print (item.name + " | " + item.category + " | " + item.brand + " | " + item.unitScale + " | " + item.scale);
+			//itemEntry.setProperties (item.id, item.name, db.getCategoryName(item.category), db.getBrandName(item.brand), db.getUnitScaleName(item.unitScale), item.scale, item.quantity);
+
+			//print (item.name + " | " + item.category + " | " + item.brand + " | " + item.unitScale + " | " + item.scale);
 
 
 			//itemListView.GetComponent<RectTransform> ().rect.height = itemListView.GetComponent<RectTransform> ().rect.height + ((40 * counter)); 
@@ -206,22 +223,41 @@ public class UIManager : MonoBehaviour {
 
 
 	public void AccessButtonClick(int p_type){
-		switch (p_type) {
-		case 0: // add
+
+		UpdateType utype = (UpdateType)p_type;
+
+		if (m_selectedItemEntry != null) {
+			print (m_selectedItemEntry.getID ());
+		} else {
+			print ("no selected item");
+		}
+
+		if(utype != UpdateType.ut_new)
+			updatePanel.Show(utype, db.getItem(m_selectedItemEntry.getID ()));
+
+		/*
+
+		switch (utype) {
+		case UpdateType.ut_add: // add
 			break;
-		case 1: // remove
+		case UpdateType.ut_remove: // remove
 			break;
-		case 2: // update
+		case UpdateType.ut_update: // update
 			break;
-		case 3: // new
+		case UpdateType.ut_new: // new
 			break;
 		default:
 			break;
 		}
-	
+	*/
 	}
 
-	public void SetSelected(GameObject p_itemEntry){
-		
+	public void SetSelected(ItemEntry p_itemEntry){
+		m_selectedItemEntry = p_itemEntry;
+	}
+
+	public void unselectEntry(ItemEntry p_itemEntry){
+		//if(m_selectedItemEntry == p_itemEntry)
+		//	m_selectedItemEntry = null;
 	}
 }

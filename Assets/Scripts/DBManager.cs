@@ -31,7 +31,7 @@ public class DBManager : MonoBehaviour {
 	public DataTable categories;
 	public DataTable unit_scales;
 
-	public List<HardwareItem> items = new List<HardwareItem> ();
+	public List<HardwareItem> items;// = new List<HardwareItem> ();
 
 	void Awake() 
 	{
@@ -101,6 +101,7 @@ public class DBManager : MonoBehaviour {
 	public IEnumerator load(){
 
 		print ("+load");
+		items = new List<HardwareItem> ();
 		var result = sqlDB.ExecuteQuery("SELECT * FROM items");
 
 		for(int i = 0; i < result.Rows.Count; i++){
@@ -177,8 +178,28 @@ public class DBManager : MonoBehaviour {
 		return retVal;
 	}
 
+	public HardwareItem getItem(int itemID){
 
 
+		foreach (var item in items) {
+			if (item.id == itemID)
+				return item;
+		}
+
+		HardwareItem didNotFound = new HardwareItem();
+		didNotFound.id = 0;
+		return didNotFound;
+	}
+
+	public void UpdateItemQuantity(int itemID, int quantity){
+		print ("SET QUANTITY : " + quantity.ToString() );
+		HardwareItem item = getItem (itemID);
+		item.quantity = quantity;
+
+		string query = "UPDATE items SET quantity = " + quantity.ToString() + " WHERE ID = " + itemID.ToString () + ";";
+
+		sqlDB.ExecuteNonQuery(query);
+	}
 
 }
 
