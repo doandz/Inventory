@@ -21,12 +21,16 @@ public class UpdateItemPanel : MonoBehaviour {
 	Text updateTypeText;
 
 	HardwareItem itemData;
-	DBManager db;
+
 	UIManager.UpdateType utype;
+
+	[SerializeField]
+	DBManager db;
+	[SerializeField]
+	UIManager ui;
 
 	// Use this for initialization
 	void Start () {
-		db = AppManager.instance.getDB ();
 	}
 	
 	// Update is called once per frame
@@ -45,15 +49,15 @@ public class UpdateItemPanel : MonoBehaviour {
 
 		switch(utype){
 		case UIManager.UpdateType.ut_add:
-			updateTypeText.text = "ADD:";
+			updateTypeText.text = "Add:";
 			break;
 
 		case UIManager.UpdateType.ut_remove:
-			updateTypeText.text = "SELL:";
+			updateTypeText.text = "Sell:";
 			break;
 
 		case UIManager.UpdateType.ut_update:
-			updateTypeText.text = "UPDATE:";
+			updateTypeText.text = "Update:";
 			break;
 		default:
 			break;
@@ -97,7 +101,7 @@ public class UpdateItemPanel : MonoBehaviour {
 			inputValue.text = "";
 		} else {
 			db.UpdateItemQuantity(itemData.id, newValue);
-			AppManager.instance.getUIManager ().Filter ();
+			ui.refreshList ();
 			gameObject.SetActive (false);
 		}
 		

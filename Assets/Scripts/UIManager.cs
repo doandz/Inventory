@@ -39,6 +39,8 @@ public class UIManager : MonoBehaviour {
 
 	[SerializeField]
 	UpdateItemPanel updatePanel;
+	[SerializeField]
+	NewItemPanel newItemPanel;
 
 
 	[SerializeField]
@@ -60,6 +62,7 @@ public class UIManager : MonoBehaviour {
 		//mainMenu.SetActive (true);
 		accessPanel.SetActive (true);
 		updatePanel.gameObject.SetActive (false);
+		newItemPanel.gameObject.SetActive (false);
 
 
 		db = gameObject.GetComponent<DBManager> ();
@@ -228,12 +231,16 @@ public class UIManager : MonoBehaviour {
 
 		if (m_selectedItemEntry != null) {
 			print (m_selectedItemEntry.getID ());
-		} else {
+		} else if (utype == UpdateType.ut_new) {
+			newItemPanel.Show ();
+		}
+		else {
 			print ("no selected item");
+			return;
 		}
 
-		if(utype != UpdateType.ut_new)
-			updatePanel.Show(utype, db.getItem(m_selectedItemEntry.getID ()));
+		if (utype != UpdateType.ut_new)
+			updatePanel.Show (utype, db.getItem (m_selectedItemEntry.getID ()));
 
 		/*
 
@@ -259,5 +266,12 @@ public class UIManager : MonoBehaviour {
 	public void unselectEntry(ItemEntry p_itemEntry){
 		//if(m_selectedItemEntry == p_itemEntry)
 		//	m_selectedItemEntry = null;
+	}
+
+	public void refreshList(){
+		loading.SetActive (true);
+		StartCoroutine (db.load ());
+		loading.SetActive (false);
+		Filter ();
 	}
 }
