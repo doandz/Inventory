@@ -18,8 +18,13 @@ public class ItemEntry : MonoBehaviour, ISelectHandler, IDeselectHandler {
 	[SerializeField]
 	Text _unitScale;
 
+
+	[SerializeField]
+	Text _price;
+
 	[SerializeField]
 	Text _quantity;
+
 
 	HardwareItem itemData;
 
@@ -36,10 +41,11 @@ public class ItemEntry : MonoBehaviour, ISelectHandler, IDeselectHandler {
 	public void setProperty(HardwareItem item){
 		DBManager db = AppManager.instance.getDB ();
 		itemData = item;
-		_name.text = itemData.name + " : " + item.id.ToString();
+		_name.text = itemData.name;
 		_category.text = db.getCategoryName(item.category) ;
 		_brand.text = db.getBrandName(item.brand);
 		_unitScale.text =   db.getUnitScaleName(item.unitScale)+ " : " + item.scale.ToString ();
+		_price.text = item.price.ToString ("F");
 		_quantity.text = item.quantity.ToString ();
 	}
 

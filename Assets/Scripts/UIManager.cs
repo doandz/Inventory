@@ -202,8 +202,9 @@ public class UIManager : MonoBehaviour {
 
 			itemClone.transform.SetParent(itemListView.content.transform);
 
-			itemClone.transform.localPosition = new Vector3 (457, -20-(40 * counter), 0);
+			itemClone.transform.localPosition = new Vector3 (7, -35-(50 * counter), 0);
 			ItemEntry itemEntry = itemClone.GetComponent<ItemEntry> ();
+			itemClone.transform.localScale = Vector3.one;
 
 			itemEntry.setProperty (item);
 
@@ -229,12 +230,14 @@ public class UIManager : MonoBehaviour {
 
 		UpdateType utype = (UpdateType)p_type;
 
+		if (utype == UpdateType.ut_new) {
+			newItemPanel.Show ();
+			return;
+		}
+
 		if (m_selectedItemEntry != null) {
 			print (m_selectedItemEntry.getID ());
-		} else if (utype == UpdateType.ut_new) {
-			newItemPanel.Show ();
-		}
-		else {
+		} else {
 			print ("no selected item");
 			return;
 		}

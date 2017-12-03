@@ -203,36 +203,11 @@ public class DBManager : MonoBehaviour {
 
 	public void UpdateItemQuantity(int itemID, int quantity){
 		string query = "UPDATE items SET quantity = " + quantity.ToString() + " WHERE ID = " + itemID.ToString () + ";";
-
 		sqlDB.ExecuteNonQuery(query);
-
 	}
 
 	public void AddNewItem(HardwareItem newItem){
-		/*
-INSERT INTO table1 (
- column1,
- column2 ,..)
-VALUES
- (
- value1,
- value2 ,...);
-
-HardwareItem item = new HardwareItem ();
-			item.id = (int)row["id"];
-			item.name = (string)row ["name"];
-			item.category = (int)row ["category_id"];
-			item.brand = (int)row ["brand_id"];
-			item.unitScale = (int)row ["unit_id"];
-			item.scale =  float.Parse((string)row ["scale"]);
-			item.price = (int)row ["price"];
-			item.quantity = (int)row ["quantity"];
-
-		*/
-
-
 		string query = "INSERT INTO items (name, category_id, brand_id, unit_id, scale, price, quantity) VALUES (\"" + newItem.name + "\" , " + newItem.category + " , " + newItem.brand + " , " + newItem.unitScale + " , " + newItem.scale + " , " + newItem.price + " , " + newItem.quantity + " );";
-
 		print (query);
 		sqlDB.ExecuteNonQuery(query);
 	}
